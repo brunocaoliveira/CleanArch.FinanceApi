@@ -11,7 +11,7 @@ namespace FinancasPessoais.Api.Tests
     public class TransacaoServiceTests
     {
       [Fact]
-      public void TestName()
+      public async Task AdicionarAsync_QuandoTransacaoEValida_DeveRetornarTransacaoEValida_DeveRetornarTransacaoCompleta()
       {
         // arrange(preparar)
 
@@ -24,11 +24,16 @@ namespace FinancasPessoais.Api.Tests
         };
         //crio um mock (simulador) do repositorio
         var repositoryMock = new Mock<ITransacaoRepository>();
+
+        repositoryMock.Setup(r=> r.SaveChangesAsync())
+            .ReturnsAsync(true); //retorna uma task<bool> com valor de true
+
+
         //crio um serviço real, mas passando o repositório mockado/fingido para ele
 
         var service = new TransacaoService(repositoryMock.Object);
 
-        var transacaoCriada = service.Adicionar(dto); //método que vou testar
+        var transacaoCriada = await service.AdicionarAsync(dto); //método que vou testar
 
         Assert.NotNull(transacaoCriada);   //verifico se a transação criada não é nula
         Assert.Equal("Salário", transacaoCriada.Descricao);  //verifico se a descrição é a mesma do dto
@@ -40,7 +45,7 @@ namespace FinancasPessoais.Api.Tests
       }
 
       [Fact]
-      public void Adicionar_QuandoValorEZero_DeveLancarExcecao()
+      public async Task AdicionarAsync_QuandoValorEZero_DeveLancarExcecao()
       {
         // Given
         var dtoComValorZero = new CriarTransacaoDto
@@ -53,13 +58,13 @@ namespace FinancasPessoais.Api.Tests
         var repositoryMock = new Mock<ITransacaoRepository>();
         var service = new TransacaoService(repositoryMock.Object);
 
-        Assert.Throws<Exception>(
-            () => service.Adicionar(dtoComValorZero)
+       await Assert.ThrowsAsync<Exception>(
+            () => service.AdicionarAsync(dtoComValorZero)
         );
         
       }
       [Fact]
-        public void Adicionar_QuandoTransacaoEValida_DeveChamarRepositorio()
+        public async Task Adicionar_QuandoTransacaoEValida_DeveChamarRepositorio()
             { //arrange (preparar)
                 
                 var dto= new CriarTransacaoDto{
@@ -71,18 +76,21 @@ namespace FinancasPessoais.Api.Tests
                 };
                     var repositoryMock= new Mock<ITransacaoRepository>();
 
+                    repositoryMock.Setup(r=> r.SaveChangesAsync())
+                        .ReturnsAsync(true); //configuracao de retorno do mock
+
                     var service= new TransacaoService(repositoryMock.Object);
                     //act (agir)
-                    service.Adicionar(dto);
+                  await  service.AdicionarAsync(dto);
 
                     //assert seguindo os padrões AAA
 
 
                     //Aqui verifiquei se o método Add do repositório foi chamado exatamente uma vez
-                    repositoryMock.Verify(r=> r.Add(It.IsAny<Transacao>()), Times.Once);
+                    repositoryMock.Verify(r=> r.AddAsync(It.IsAny<Transacao>()), Times.Once);
 
                     //Também verifiquei se o método SaveChanges também foi chamado.
-                    repositoryMock.Verify(r=> r.SaveChanges(), Times.Once);
+                    repositoryMock.Verify(r=> r.SaveChangesAsync(), Times.Once);
                 }
             }
     }

@@ -1,14 +1,17 @@
 using FinancasPessoais.Api.Models;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using FinancasPessoais.Api.Interface;
 
 
 namespace FinancasPessoais.Api.Interface
 {
     public interface ITransacaoRepository
     {
-        IEnumerable<Transacao>GetAll();
-
-        void Add(Transacao transacao);
-
-        bool SaveChanges();
+       
+        Task<IEnumerable<Transacao>> GetAllAsync();
+        Task<Transacao?> GetByIdAsync(Guid id);
+        Task AddAsync(Transacao transacao);
+        Task<bool> SaveChangesAsync();
     }
 }

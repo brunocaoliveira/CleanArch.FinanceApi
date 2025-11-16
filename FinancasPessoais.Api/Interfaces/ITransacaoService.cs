@@ -6,8 +6,8 @@ namespace FinancasPessoais.Api.Interface
 {
     public interface ITransacaoService
     {
-        IEnumerable<Transacao>ObterTodas();
-
-        Transacao Adicionar(CriarTransacaoDto dto);
+        Task<IEnumerable<Transacao>> ObterTodasAsync();
+        Task<Transacao> AdicionarAsync(CriarTransacaoDto dto);
+        Task<Transacao?> ObterPorIdAsync(Guid id);
     }
 }
