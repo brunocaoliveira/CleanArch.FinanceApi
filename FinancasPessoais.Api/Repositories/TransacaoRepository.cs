@@ -1,6 +1,7 @@
 using FinancasPessoais.Api.Data;
 using FinancasPessoais.Api.Interface;
 using FinancasPessoais.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinancasPessoais.Api.Repositories
 {
@@ -11,20 +12,27 @@ namespace FinancasPessoais.Api.Repositories
         {
             _context = context;
         }
-
-        public void Add(Transacao transacao)
+        public async Task<IEnumerable<Transacao>> GetAllAsync()
         {
-            _context.Transacoes.Add(transacao);
-        }
-        public IEnumerable<Transacao> GetAll()
-        {
-            return _context.Transacoes.ToList();
+            return await _context.Transacoes.ToListAsync();
 
         }
-
-        public bool SaveChanges()
+        public async Task<Transacao?> GetByIdAsync(Guid id)
         {
-            return (_context.SaveChanges() >= 0);
-        }       
+            return await _context.Transacoes.FirstOrDefaultAsync(t=> t.Id==id);
+        }
+
+        public async Task AddAsync(Transacao transacao)
+        {
+            await _context.Transacoes.AddAsync(transacao);
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await _context.SaveChangesAsync() > 0);
+        }
+       
+
+            
     }
 }

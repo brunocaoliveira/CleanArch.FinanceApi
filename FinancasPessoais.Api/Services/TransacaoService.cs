@@ -1,7 +1,7 @@
-using FinancasPessoais.Api.Interface;
 
 using FinancasPessoais.Api.Models;
 using FinancasPessoais.Api.Dtos;
+using FinancasPessoais.Api.Interface;
 
 namespace FinancasPessoais.Api.Services
 {
@@ -12,12 +12,9 @@ namespace FinancasPessoais.Api.Services
         {
             _repository = repository;
         }
-        public IEnumerable<Transacao> ObterTodas()
-        {
-            return _repository.GetAll();
-        }
+        
 
-       public Transacao Adicionar(CriarTransacaoDto dto)
+       public async Task<Transacao>AdicionarAsync(CriarTransacaoDto dto)
 {
     if (dto.Valor == 0)
     {
@@ -38,12 +35,24 @@ namespace FinancasPessoais.Api.Services
         Valor = dto.Valor,
         Tipo = dto.Tipo
     };
+
+    
     
 
-    _repository.Add(novaTransacao);
-    _repository.SaveChanges(); 
+    await _repository.AddAsync(novaTransacao);
+    await _repository.SaveChangesAsync(); 
 
     return novaTransacao;
 }
+    public async Task<IEnumerable<Transacao>> ObterTodasAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+
+        public async Task<Transacao?>ObterPorIdAsync(Guid id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
     }
+
 }
