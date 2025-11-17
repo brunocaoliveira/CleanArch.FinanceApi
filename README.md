@@ -10,7 +10,7 @@ API RESTful em .NET 8 para um simples gestor de finanças pessoais. Este projeto
 
 ## 🏛️ Arquitetura e Padrões de Design
 
-O principal objetivo deste projeto não é a funcionalidade, mas sim demonstrar uma arquitetura de back-end robusta, testável e de fácil manutenção.
+O principal objetivo deste projeto não é apenas a funcionalidade, mas sim demonstrar uma arquitetura de back-end robusta, testável e de fácil manutenção.
 
 O design da aplicação é baseado em uma arquitetura de 3 camadas (3-Layer) desacoplada:
 
